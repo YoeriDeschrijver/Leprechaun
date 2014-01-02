@@ -1,4 +1,0 @@
-Leprechaun
-==========
-
-Leprechaun
