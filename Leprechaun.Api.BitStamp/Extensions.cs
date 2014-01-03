@@ -8,6 +8,5 @@ namespace Leprechaun.Api.BitStamp
         {
             return string.Format(format, args);
         }
-
     }
 }
