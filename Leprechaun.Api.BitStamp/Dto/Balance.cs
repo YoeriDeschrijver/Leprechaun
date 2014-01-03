@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
 namespace Leprechaun.Api.BitStamp
 {
@@ -53,5 +48,15 @@ namespace Leprechaun.Api.BitStamp
         /// </summary>
         [JsonProperty("fee")]
         public decimal Fee { get;set;}
+
+        /// <summary>
+        /// Return object as string
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return string.Format("Balance{usdBalance={0}, btcBalance={1}, usdReserved={2}, btcReserved={3}, usdAvailable={4}, btcAvailable={5}, fee={6}}",
+                BalanceUSD, BalanceBTC, ReservedUSD, ReservedBTC, AvailableUSD, AvailableBTC, Fee);
+        }
     }
 }

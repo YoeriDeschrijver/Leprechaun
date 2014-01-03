@@ -9,17 +9,21 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web.Script.Serialization;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Leprechaun.Api.BitStamp
 {
     public class BitStampClient
     {
-        private const string Key = "t0BigagVZmWWL6mrMaMkZHkViayXvRYF"; //Yoeri
-        private const string Secret = "swuqE4OiC5Jq46IkNwoUd0xiwKa2Wioo"; //Yoeri
-        private const string ClientId = "463802"; //Yoeri
-
         private HttpClient _http;
 
+        /// <summary>
+        /// Create new BitStampClient.
+        /// </summary>
+        /// <param name="scheme"></param>
+        /// <param name="host"></param>
+        /// <param name="port"></param>
+        /// <param name="path"></param>
         public BitStampClient(string scheme = "https", string host = "www.bitstamp.net", int port = 443, string path = "api")
         {
             _http = new HttpClient(new HttpClientHandler())
@@ -32,41 +36,82 @@ namespace Leprechaun.Api.BitStamp
             _http.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
-        public Balance GetBalance()
+        #region NO AUTHORIZATION
+        /// <summary>
+        /// Get the lastest rate info.
+        /// </summary>
+        /// <returns></returns>
+        public RateInfo GetRateInfo()
+        {
+            var response = _http.GetAsync("api/ticker/").Result;
+
+            if (!response.IsSuccessStatusCode)
+            {
+                //Todo: which errors to expect?
+                throw new Exception("Request went wrong...");
+            }
+
+            return JsonConvert.DeserializeObject<RateInfo>(response.Content.ReadAsStringAsync().Result);
+        }
+
+        public OrderBook GetOrderBook()
+        {
+            var response = _http.GetAsync("api/order_book/").Result;
+
+            if (!response.IsSuccessStatusCode)
+            {
+                //Todo: which errors to expect?
+                throw new Exception("Request went wrong...");
+            }
+
+            //var jsonSerializer = new JavaScriptSerializer();
+            //var obj = jsonSerializer.Deserialize<JObject>(response.Content.ReadAsStringAsync().Result);
+
+            var obj = JsonConvert.DeserializeObject<OrderBook>(response.Content.ReadAsStringAsync().Result /*, new JsonOrderBookConverter()*/);
+
+
+            return null;
+        }
+        #endregion
+
+        #region AUTHORIZATION REQUIRED
+        /// <summary>
+        /// Get balance.
+        /// </summary>
+        /// <returns></returns>
+        public Balance GetBalance(BitStampCredentials credentials)
         {
             //Assemble content
             var nonce = GetNonce();
-            var signature = GetSignature(string.Format("{0}{1}{2}", nonce, ClientId, Key));
+            var signature = BitStampSignature.Create(credentials, nonce);
 
             var content = new FormUrlEncodedContent(new[] 
             {
-                new KeyValuePair<string, string>("key", Key),                
+                new KeyValuePair<string, string>("key", credentials.ApiKey),                
                 new KeyValuePair<string, string>("signature", signature),
-                new KeyValuePair<string, string>("nonce", nonce.ToString(CultureInfo.InvariantCulture))
+                new KeyValuePair<string, string>("nonce", nonce.ToString())
             });
 
             var response = _http.PostAsync("api/balance/", content).Result;
+
+            if (!response.IsSuccessStatusCode)
+            {
+                //Todo: which errors to expect?
+                throw new Exception("Request went wrong...");
+            }
             
-            //TODO: check if response has status 200
             return JsonConvert.DeserializeObject<Balance>(response.Content.ReadAsStringAsync().Result);
         }
+        #endregion
 
-        private static int GetNonce(){return (int)(DateTime.Now - new DateTime(1970, 1, 1)).TotalSeconds;}
-        private static string GetSignature(string message)
-        {
-            return ByteArrayToString(SignHMACSHA256(Secret, Encoding.ASCII.GetBytes(message))).ToUpper();
-        }
 
-        public static byte[] SignHMACSHA256(String key, byte[] data)
-        {
-            var hashMaker = new HMACSHA256(Encoding.ASCII.GetBytes(key));
-            return hashMaker.ComputeHash(data);
-        }
 
-        public static string ByteArrayToString(byte[] hash)
-        {
-            return BitConverter.ToString(hash).Replace("-", "").ToLower();
-        }
+
+        /// <summary>
+        /// Create nonce
+        /// </summary>
+        /// <returns></returns>
+        private static int GetNonce() { return (int)(DateTime.Now - new DateTime(1970, 1, 1)).TotalSeconds; }
     }
 }
 

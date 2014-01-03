@@ -45,10 +45,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Balance.cs" />
+    <Compile Include="Dto\Ask.cs" />
+    <Compile Include="Dto\Balance.cs" />
     <Compile Include="BitStampClient.cs" />
-    <Compile Include="Extensions.cs" />
+    <Compile Include="BitStampSignature.cs" />
+    <Compile Include="BitStampCredentials.cs" />
+    <Compile Include="Dto\Bid.cs" />
+    <Compile Include="Dto\OrderBook.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Dto\RateInfo.cs" />
+    <Compile Include="Utility\JsonOrderBookContverter.cs" />
+    <Compile Include="Utility\JsonTimeStampConverter.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
