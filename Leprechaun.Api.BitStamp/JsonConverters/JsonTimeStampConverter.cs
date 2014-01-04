@@ -15,7 +15,7 @@ namespace Leprechaun.Api.BitStamp
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            return _epoch.AddMilliseconds(Convert.ToInt64(reader.Value) / 1000d);
+            return _epoch.AddSeconds(Convert.ToInt64(reader.Value));
         }
     }
 }
