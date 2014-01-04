@@ -10,7 +10,7 @@ namespace Leprechaun.Api.BitStamp
     /// <summary>
     /// Info: Do not make more than 600 request per 10 minutes or BitStamp will ban your IP address.
     /// </summary>
-    public class BitStampClient
+    public class BitStampClient : IDisposable
     {
         private HttpClient _http;
 
@@ -280,6 +280,16 @@ namespace Leprechaun.Api.BitStamp
             return JsonConvert.DeserializeObject<Order>(response.Content.ReadAsStringAsync().Result);
         }
         #endregion        
+    
+        #region IDisposable Members
+        public void Dispose()
+        {
+            if (_http != null)
+            {
+                _http.Dispose();
+            }
+        }
+        #endregion
     }
 }
 
