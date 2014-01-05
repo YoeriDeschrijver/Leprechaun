@@ -2,7 +2,7 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
-namespace Leprechaun.Api.BitStamp
+namespace Leprechaun.BitStamp.Api.Client
 {
     public class JsonTimeStampConverter : DateTimeConverterBase
     {

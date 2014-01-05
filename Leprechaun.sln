@@ -1,9 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Api.BitStamp", "Leprechaun.Api.BitStamp\Api.BitStamp.csproj", "{24AD1F14-2072-4AA9-9026-EC2D1B0BB140}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BitStamp.Api.Client", "Leprechaun.Api.BitStamp\BitStamp.Api.Client.csproj", "{24AD1F14-2072-4AA9-9026-EC2D1B0BB140}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BitStamp.Start", "Api.BitStamp.Run\BitStamp.Start.csproj", "{6E95574C-1556-44E0-86EF-EE9A445CD675}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BitStamp.Jobs", "BitStamp.Bot\BitStamp.Jobs.csproj", "{CA346C68-0476-4663-89AF-66E911F10CE8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BitStamp.DAL", "BitStamp.DAL\BitStamp.DAL.csproj", "{3D1B38D8-3CBD-4F84-8F22-B33A28BAB93B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,6 +23,14 @@ Global
 		{6E95574C-1556-44E0-86EF-EE9A445CD675}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6E95574C-1556-44E0-86EF-EE9A445CD675}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6E95574C-1556-44E0-86EF-EE9A445CD675}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CA346C68-0476-4663-89AF-66E911F10CE8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CA346C68-0476-4663-89AF-66E911F10CE8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CA346C68-0476-4663-89AF-66E911F10CE8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CA346C68-0476-4663-89AF-66E911F10CE8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3D1B38D8-3CBD-4F84-8F22-B33A28BAB93B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3D1B38D8-3CBD-4F84-8F22-B33A28BAB93B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3D1B38D8-3CBD-4F84-8F22-B33A28BAB93B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3D1B38D8-3CBD-4F84-8F22-B33A28BAB93B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

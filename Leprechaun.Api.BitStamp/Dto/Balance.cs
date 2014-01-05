@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace Leprechaun.Api.BitStamp
+namespace Leprechaun.BitStamp.Api.Client
 {
     /// <summary>
     /// Get balance info for user

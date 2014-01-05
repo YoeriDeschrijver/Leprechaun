@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace Leprechaun.Api.BitStamp
+namespace Leprechaun.BitStamp.Api.Client
 {
     /// <summary>
     /// BitStamp sends error messages in different syntaxes. -> Painfull

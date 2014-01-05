@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace Leprechaun.Api.BitStamp
+namespace Leprechaun.BitStamp.Api.Client
 {
     public class JsonBitStampErrorConverter : JsonConverter
     {

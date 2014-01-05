@@ -1,15 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Leprechaun.Api.BitStamp;
+﻿using Leprechaun.BitStamp.Api.Client;
+using Leprechaun.BitStamp.Jobs;
 
 namespace Leprechaun.BitStamp.Start
 {
     public class Program
     {
         public static void Main(string[] args)
+        {
+            //TestClient();
+            TestJosb();
+
+        }
+
+        private static void TestClient()
         {
             using (var client = new BitStampClient())
             {
@@ -30,6 +33,12 @@ namespace Leprechaun.BitStamp.Start
                 //var sell = client.Sell(new BitStampSignature(credentials), 1.01m);
 
             }
+        }
+
+        private static void TestJosb()
+        {
+            var job = new CollectBTCRatesJob();
+            job.Start();
         }
     }
 }

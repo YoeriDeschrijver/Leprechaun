@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace Leprechaun.Api.BitStamp
+namespace Leprechaun.BitStamp.Api.Client
 {
     /// <summary>
     /// Order book is a list of all open sell and buy orders at the moment. 

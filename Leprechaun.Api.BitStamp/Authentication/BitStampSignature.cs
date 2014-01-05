@@ -2,7 +2,7 @@
 using System.Security.Cryptography;
 using System.Text;
 
-namespace Leprechaun.Api.BitStamp
+namespace Leprechaun.BitStamp.Api.Client
 {
     /// <summary>
     /// Signature is a HMAC-SHA256 encoded message containing: nonce, client ID and API key. 

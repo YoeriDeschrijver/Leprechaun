@@ -4,16 +4,15 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{6E95574C-1556-44E0-86EF-EE9A445CD675}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <ProjectGuid>{CA346C68-0476-4663-89AF-66E911F10CE8}</ProjectGuid>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Leprechaun.BitStamp.Start</RootNamespace>
-    <AssemblyName>Leprechaun.BitStamp.Start</AssemblyName>
+    <RootNamespace>Leprechaun.BitStamp.Jobs</RootNamespace>
+    <AssemblyName>Leprechaun.BitStamp.Jobs</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -23,7 +22,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -34,7 +32,6 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -42,17 +39,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Program.cs" />
+    <Compile Include="CollectBTCRatesJob.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\BitStamp.Bot\BitStamp.Jobs.csproj">
-      <Project>{ca346c68-0476-4663-89af-66e911f10ce8}</Project>
-      <Name>BitStamp.Jobs</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Leprechaun.Api.BitStamp\BitStamp.Api.Client.csproj">
       <Project>{24ad1f14-2072-4aa9-9026-ec2d1b0bb140}</Project>
       <Name>BitStamp.Api.Client</Name>

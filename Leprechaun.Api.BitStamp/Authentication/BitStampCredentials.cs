@@ -1,4 +1,4 @@
-﻿namespace Leprechaun.Api.BitStamp
+﻿namespace Leprechaun.BitStamp.Api.Client
 {
     /// <summary>
     /// Holds credentials for a BitStamp account.

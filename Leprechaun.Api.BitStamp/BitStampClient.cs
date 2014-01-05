@@ -5,7 +5,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using Newtonsoft.Json;
 
-namespace Leprechaun.Api.BitStamp
+namespace Leprechaun.BitStamp.Api.Client
 {
     /// <summary>
     /// Info: Do not make more than 600 request per 10 minutes or BitStamp will ban your IP address.
@@ -132,7 +132,7 @@ namespace Leprechaun.Api.BitStamp
         /// <param name="amount">Amount</param>
         /// <param name="price">Price in USD</param>
         /// <returns>Order</returns>
-        public Order Buy(BitStampSignature signature, decimal amount, decimal? price = null)
+        public Order Buy(BitStampSignature signature, double amount, double? price = null)
         {
             if (amount <= 0)
             {
@@ -162,7 +162,7 @@ namespace Leprechaun.Api.BitStamp
         /// <param name="amount">Amount</param>
         /// <param name="price">Price in USD</param>
         /// <returns>Order</returns>
-        public Order Sell(BitStampSignature signature, decimal amount, decimal? price = null)
+        public Order Sell(BitStampSignature signature, double amount, double? price = null)
         {
             if (amount <= 0)
             {

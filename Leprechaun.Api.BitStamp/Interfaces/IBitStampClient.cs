@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
-namespace Leprechaun.Api.BitStamp
+namespace Leprechaun.BitStamp.Api.Client
 {
     /// <summary>
     /// BitStampClient interface
@@ -70,7 +66,7 @@ namespace Leprechaun.Api.BitStamp
         /// <param name="amount">Amount</param>
         /// <param name="price">Price in USD</param>
         /// <returns>Order</returns>
-        Order Buy(BitStampSignature signature, decimal amount, decimal? price = null);
+        Order Buy(BitStampSignature signature, double amount, double? price = null);
 
         /// <summary>
         /// Sell Bitcoins. This uses limited orders.
@@ -79,7 +75,7 @@ namespace Leprechaun.Api.BitStamp
         /// <param name="amount">Amount</param>
         /// <param name="price">Price in USD</param>
         /// <returns>Order</returns>
-        Order Sell(BitStampSignature signature, decimal amount, decimal? price = null);
+        Order Sell(BitStampSignature signature, double amount, double? price = null);
         #endregion 
     }
 }
