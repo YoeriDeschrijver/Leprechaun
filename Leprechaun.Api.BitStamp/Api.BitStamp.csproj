@@ -47,15 +47,16 @@
   <ItemGroup>
     <Compile Include="Dto\Balance.cs" />
     <Compile Include="BitStampClient.cs" />
-    <Compile Include="BitStampSignature.cs" />
-    <Compile Include="BitStampCredentials.cs" />
-    <Compile Include="Dto\BitstampException.cs" />
+    <Compile Include="Authentication\BitStampSignature.cs" />
+    <Compile Include="Authentication\BitStampCredentials.cs" />
+    <Compile Include="Exceptions\BitstampException.cs" />
     <Compile Include="Dto\Enums.cs" />
     <Compile Include="Dto\Error.cs" />
     <Compile Include="Dto\Order.cs" />
     <Compile Include="Dto\OrderBook.cs" />
     <Compile Include="Dto\Transaction.cs" />
     <Compile Include="Dto\UserTransaction.cs" />
+    <Compile Include="Interfaces\IBitStampClient.cs" />
     <Compile Include="JsonConverters\JsonBitStampErrorConverter.cs" />
     <Compile Include="JsonConverters\JsonIntEnumConverter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

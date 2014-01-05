@@ -23,9 +23,9 @@ namespace Leprechaun.BitStamp.Start
                 //var credentials = new BitStampCredentials("t0BigagVZmWWL6mrMaMkZHkViayXvRYF", "463802", "swuqE4OiC5Jq46IkNwoUd0xiwKa2Wioo"); //Yoeri
                 var credentials = new BitStampCredentials("zjd7bRStRp7aR1cT7XmjQP2Aax7LXOzp", "397277", "RHJrjHRKecWKgtztzRtyKIFfSJIqeHCM"); //Kurt
                 //var deposit = client.GetBitCoinDepositAddress(new BitStampSignature(credentials));
-                var balance = client.GetBalance(new BitStampSignature(credentials));            
+                //var balance = client.GetBalance(new BitStampSignature(credentials));            
                 //var transactions = client.GetUserTransactions(new BitStampSignature(credentials));
-                //var openOrders = client.GetOpenOrders(new BitStampSignature(credentials));
+                var openOrders = client.GetOpenOrders(new BitStampSignature(credentials));
                 //var buy = client.Buy(new BitStampSignature(credentials), 1.01m);
                 //var sell = client.Sell(new BitStampSignature(credentials), 1.01m);
 

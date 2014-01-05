@@ -10,7 +10,7 @@ namespace Leprechaun.Api.BitStamp
     /// <summary>
     /// Info: Do not make more than 600 request per 10 minutes or BitStamp will ban your IP address.
     /// </summary>
-    public class BitStampClient : IDisposable
+    public class BitStampClient : IBitStampClient, IDisposable
     {
         private HttpClient _http;
 
@@ -41,55 +41,35 @@ namespace Leprechaun.Api.BitStamp
         /// <returns></returns>
         public RateInfo GetRateInfo()
         {
-            var response = _http.GetAsync("api/ticker/").Result;
-
-            if (!response.IsSuccessStatusCode)
-            {
-                //Todo: which errors to expect?
-                throw new Exception("Request went wrong...");
-            }
-
-            return JsonConvert.DeserializeObject<RateInfo>(response.Content.ReadAsStringAsync().Result);
+            return GetRequest<RateInfo>("api/ticker/");
         }
 
         /// <summary>
-        /// Get the order book
+        /// Get the order book.
         /// </summary>
         /// <returns></returns>
         public OrderBook GetOrderBook()
         {
-            var response = _http.GetAsync("api/order_book/").Result;
-
-            if (!response.IsSuccessStatusCode)
-            {
-                //Todo: which errors to expect?
-                throw new Exception("Request went wrong...");
-            }
-
-            return JsonConvert.DeserializeObject<OrderBook>(response.Content.ReadAsStringAsync().Result);
+            return GetRequest<OrderBook>("api/order_book/");
         }
 
         /// <summary>
-        /// Get the transactions
+        /// Get the transactions.
         /// </summary>
         /// <returns></returns>
         public List<Transaction> GetTransactions()
         {
-            var response = _http.GetAsync("api/transactions/").Result;
-
-            if (!response.IsSuccessStatusCode)
-            {
-                //Todo: which errors to expect?
-                throw new Exception("Request went wrong...");
-            }
-
-            return JsonConvert.DeserializeObject<List<Transaction>>(response.Content.ReadAsStringAsync().Result);
+            return GetRequest<List<Transaction>>("api/transactions/");
         }        
         #endregion
 
 
         #region AUTHORIZATION REQUIRED
-
+        /// <summary>
+        /// Get users BitCoin deposit address.
+        /// </summary>
+        /// <param name="signature"></param>
+        /// <returns>deposit address</returns>
         public string GetBitCoinDepositAddress(BitStampSignature signature)
         {
             return PostAuthenticatedRequest<string>("api/bitcoin_deposit_address/", signature);
@@ -105,17 +85,16 @@ namespace Leprechaun.Api.BitStamp
         }
 
         /// <summary>
-        /// Get users transactions
+        /// Get users transactions.
         /// </summary>
         /// <returns></returns>
         public List<UserTransaction> GetUserTransactions(BitStampSignature signature, int offset = 0, int limit = 100, string sort = "desc")
         {
-            var param = new[] {
+            return PostAuthenticatedRequest<List<UserTransaction>>("api/user_transactions/", signature, new[] {
                 new KeyValuePair<string, string>("offset", offset.ToString()),
                 new KeyValuePair<string, string>("limit", limit.ToString()),
                 new KeyValuePair<string, string>("sort", sort)
-            };
-            return PostAuthenticatedRequest<List<UserTransaction>>("api/user_transactions/", signature, param);
+            });
         }
 
         /// <summary>
@@ -128,7 +107,7 @@ namespace Leprechaun.Api.BitStamp
         }
 
         /// <summary>
-        /// Cancel order
+        /// Cancel order.
         /// </summary>
         /// <returns></returns>
         public bool CancelOrder(BitStampSignature signature, string orderID)
@@ -165,17 +144,15 @@ namespace Leprechaun.Api.BitStamp
                 throw new ArgumentException("Invalid price");
             }
 
-            //Check actual bid rate when price is empty
+            //Check actual bid rate when price is empty.
             var rate = GetRateInfo();            
             if (!price.HasValue) price = rate.Bid;
 
-            var param = new[] 
+            return PostAuthenticatedRequest<Order>("api/buy/", signature, new[] 
             {
                 new KeyValuePair<string, string>("amount", amount.ToString(CultureInfo.InvariantCulture)),
                 new KeyValuePair<string, string>("price", price.Value.ToString(CultureInfo.InvariantCulture))
-            };
-
-            return PostAuthenticatedRequest<Order>("api/buy/", signature, param);
+            });
         }
 
         /// <summary>
@@ -201,20 +178,49 @@ namespace Leprechaun.Api.BitStamp
             var rate = GetRateInfo();
             if (!price.HasValue) price = rate.Ask;
 
-            var param = new[] 
+            return PostAuthenticatedRequest<Order>("api/sell/", signature, new[] 
             {
                 new KeyValuePair<string, string>("amount", amount.ToString(CultureInfo.InvariantCulture)),
                 new KeyValuePair<string, string>("price", price.Value.ToString(CultureInfo.InvariantCulture))
-            };
-
-            return PostAuthenticatedRequest<Order>("api/sell/", signature, param);
+            });
         }
         #endregion   
      
 
         #region HELPERS
         /// <summary>
-        /// Post an authenticated request to BitStamp
+        /// Send GET request to BitStamp
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="path"></param>
+        /// <param name="param"></param>
+        /// <returns></returns>
+        private T GetRequest<T>(string path, IEnumerable<KeyValuePair<string, string>> param = null)
+        {
+            //Assemble content
+            //TODO: what todo with param. Add as querystring to path?
+
+            var response = _http.GetAsync(path).Result;
+
+            //Check HTTP errors
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new BitStampException(string.Format("Invalid request: GET HTTP {0}: {1}.", response.StatusCode, response.RequestMessage.RequestUri));
+            }
+
+            //Read json as string
+            var json = response.Content.ReadAsStringAsync().Result;
+
+            //Check errors
+            var exc = GetException(json);
+            if (exc != null) throw exc;
+
+            //Deserialize successful response
+            return JsonConvert.DeserializeObject<T>(json);
+        }
+
+        /// <summary>
+        /// Send authenticated POST request to BitStamp
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="path"></param>
@@ -244,7 +250,7 @@ namespace Leprechaun.Api.BitStamp
         }
 
         /// <summary>
-        /// Post a request to BitStamp
+        /// Send POST request to BitStamp
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="path"></param>
@@ -255,32 +261,48 @@ namespace Leprechaun.Api.BitStamp
             //Assemble content
             var content = new FormUrlEncodedContent(param);
 
+            //Post
             var response = _http.PostAsync(path, new FormUrlEncodedContent(param)).Result;
 
+            //Check http status
             if (!response.IsSuccessStatusCode)
             {
                 throw new BitStampException(string.Format("Invalid request: POST HTTP {0}: {1}.", response.StatusCode , response.RequestMessage.RequestUri));
             }
 
-            var responseContent = response.Content.ReadAsStringAsync().Result;
+            //Read json as string
+            var json = response.Content.ReadAsStringAsync().Result;
 
+            //Check errors
+            var exc = GetException(json);
+            if (exc != null) throw exc;
+
+            //Deserialize successful response
+            return JsonConvert.DeserializeObject<T>(json);
+        }
+
+        /// <summary>
+        /// Return BitStampException where error is found in json.
+        /// </summary>
+        /// <param name="json"></param>
+        /// <returns></returns>
+        private BitStampException GetException(string json)
+        {
             Error error = null;
             try
             {
                 //we also can receive an error in json on HTTP 200
                 //We need to check for error first.
                 //Of course this can crash if the object isn't bitstamps error, which is good :-)
-                error = JsonConvert.DeserializeObject<Error>(responseContent);
+                error = JsonConvert.DeserializeObject<Error>(json);
             }
             catch (Exception ex) { /*It should be normal to crash here...*/ }
 
-            if(error != null && error.Messages != null && error.Messages.Count > 0)
+            if (error != null && error.Messages != null && error.Messages.Count > 0)
             {
-                throw new BitStampException(error);
+                return new BitStampException(error);
             }
-
-            //Deserialize successful response
-            return JsonConvert.DeserializeObject<T>(responseContent);
+            return null;
         }
         #endregion
 
