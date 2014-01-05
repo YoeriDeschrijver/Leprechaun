@@ -21,13 +21,13 @@ namespace Leprechaun.Api.BitStamp
         /// Get/set bids
         /// </summary>
         [JsonProperty("bids")]
-        public List<List<decimal>> Bids { get; set; } //I know this looks ugly but this is what we get from BitStamp { bids: [ ["721.05", "1.002"], ... ] }
+        public List<List<double>> Bids { get; set; } //I know this looks ugly but this is what we get from BitStamp { bids: [ ["721.05", "1.002"], ... ] }
 
         /// <summary>
         /// Get/set asks
         /// </summary>
         [JsonProperty("asks")]
-        public List<List<decimal>> Asks { get; set; }
+        public List<List<double>> Asks { get; set; }
 
     }
 }

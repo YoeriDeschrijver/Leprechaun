@@ -15,9 +15,9 @@ namespace Leprechaun.BitStamp.Start
             {
 
                 //Public
-                //var rateInfo = client.GetRateInfo();
+                var rateInfo = client.GetRateInfo();
                 //var orderBook = client.GetOrderBook();
-                //var transactions = client.GetTransactions();
+                var transactions = client.GetTransactions();
 
                 //Authenticated
                 //var credentials = new BitStampCredentials("t0BigagVZmWWL6mrMaMkZHkViayXvRYF", "463802", "swuqE4OiC5Jq46IkNwoUd0xiwKa2Wioo"); //Yoeri
@@ -25,7 +25,7 @@ namespace Leprechaun.BitStamp.Start
                 //var deposit = client.GetBitCoinDepositAddress(new BitStampSignature(credentials));
                 //var balance = client.GetBalance(new BitStampSignature(credentials));            
                 //var transactions = client.GetUserTransactions(new BitStampSignature(credentials));
-                var openOrders = client.GetOpenOrders(new BitStampSignature(credentials));
+                //var openOrders = client.GetOpenOrders(new BitStampSignature(credentials));
                 //var buy = client.Buy(new BitStampSignature(credentials), 1.01m);
                 //var sell = client.Sell(new BitStampSignature(credentials), 1.01m);
 

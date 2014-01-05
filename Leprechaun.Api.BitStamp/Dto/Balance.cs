@@ -11,43 +11,43 @@ namespace Leprechaun.Api.BitStamp
         /// Get/set USD balance
         /// </summary>
         [JsonProperty("usd_balance")]
-        public decimal BalanceUSD { get; set; }
+        public double BalanceUSD { get; set; }
 
         /// <summary>
         /// Get/set  BTV balance
         /// </summary>
         [JsonProperty("btc_balance")]
-        public decimal BalanceBTC { get; set; }
+        public double BalanceBTC { get; set; }
 
         /// <summary>
         /// Get/set USD reserved in open orders
         /// </summary>
         [JsonProperty("usd_reserved")]
-        public decimal ReservedUSD { get; set; }
+        public double ReservedUSD { get; set; }
 
         /// <summary>
         /// Get/set BTC reserved in open orders
         /// </summary>
         [JsonProperty("btc_reserved")]
-        public decimal ReservedBTC { get; set; }
+        public double ReservedBTC { get; set; }
 
         /// <summary>
         /// Get/set USD available for trading
         /// </summary>
         [JsonProperty("usd_available")]
-        public decimal AvailableUSD { get; set; }
+        public double AvailableUSD { get; set; }
 
         /// <summary>
         /// Get/set BTC available for trading
         /// </summary>
         [JsonProperty("btc_available")]
-        public decimal AvailableBTC { get; set; }
+        public double AvailableBTC { get; set; }
 
         /// <summary>
         /// Get/set customer trading fee
         /// </summary>
         [JsonProperty("fee")]
-        public decimal Fee { get;set;}
+        public double Fee { get; set; }
 
         /// <summary>
         /// Return object as string

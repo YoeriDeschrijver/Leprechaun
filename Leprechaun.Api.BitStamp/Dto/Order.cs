@@ -36,12 +36,12 @@ namespace Leprechaun.Api.BitStamp
         /// Get/set BTC price
         /// </summary>
         [JsonProperty("price")]
-        public decimal Price { get; set; }
+        public double Price { get; set; }
 
         /// <summary>
         /// Get/set BTC amount
         /// </summary>
         [JsonProperty("amount")]
-        public decimal Amount { get; set; }
+        public double Amount { get; set; }
     }
 }
