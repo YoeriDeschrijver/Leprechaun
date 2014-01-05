@@ -7,6 +7,8 @@ using Newtonsoft.Json;
 
 namespace Leprechaun.Api.BitStamp
 {
+    
+
     /// <summary>
     /// Transaction of BitStamp user.
     /// </summary>
@@ -35,7 +37,8 @@ namespace Leprechaun.Api.BitStamp
         /// Get/set transaction type (0 - deposit; 1 - withdrawal; 2 - market trade)
         /// </summary>
         [JsonProperty("type")]
-        public int Type { get; set; }
+        [JsonConverter(typeof(JsonIntEnumConverter))]
+        public UserTransactionType Type { get; set; }
 
         /// <summary>
         /// Get/set USD amount

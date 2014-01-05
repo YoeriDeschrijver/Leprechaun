@@ -5,4 +5,3 @@ C:\Projects_own\Leprechaun\Leprechaun.Api.BitStamp\obj\Debug\Leprechaun.Api.BitS
 C:\Projects_own\Leprechaun\Leprechaun.Api.BitStamp\obj\Debug\Leprechaun.Api.BitStamp.pdb
 C:\Projects_own\Leprechaun\Leprechaun.Api.BitStamp\bin\Debug\Newtonsoft.Json.dll
 C:\Projects_own\Leprechaun\Leprechaun.Api.BitStamp\bin\Debug\Newtonsoft.Json.xml
-C:\Projects_own\Leprechaun\Leprechaun.Api.BitStamp\obj\Debug\Api.BitStamp.csprojResolveAssemblyReference.cache

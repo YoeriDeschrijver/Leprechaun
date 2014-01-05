@@ -89,55 +89,33 @@ namespace Leprechaun.Api.BitStamp
 
 
         #region AUTHORIZATION REQUIRED
+
+        public string GetBitCoinDepositAddress(BitStampSignature signature)
+        {
+            return PostAuthenticatedRequest<string>("api/bitcoin_deposit_address/", signature);
+        }
+
         /// <summary>
         /// Get balance.
         /// </summary>
         /// <returns></returns>
         public Balance GetBalance(BitStampSignature signature)
         {
-            //Assemble content
-            var content = new FormUrlEncodedContent(new[] 
-            {
-                new KeyValuePair<string, string>("key", signature.ApiKey),                
-                new KeyValuePair<string, string>("signature", signature.Signature),
-                new KeyValuePair<string, string>("nonce", signature.Nonce.ToString())
-            });
-
-            var response = _http.PostAsync("api/balance/", content).Result;
-
-            if (!response.IsSuccessStatusCode)
-            {
-                //Todo: which errors to expect?
-                throw new Exception("Request went wrong...");
-            }
-            
-            return JsonConvert.DeserializeObject<Balance>(response.Content.ReadAsStringAsync().Result);
+            return PostAuthenticatedRequest<Balance>("api/balance/", signature);
         }
 
         /// <summary>
         /// Get users transactions
         /// </summary>
         /// <returns></returns>
-        public List<UserTransaction> GetUserTransactions(BitStampSignature signature)
+        public List<UserTransaction> GetUserTransactions(BitStampSignature signature, int offset = 0, int limit = 100, string sort = "desc")
         {
-            //Assemble content
-            var content = new FormUrlEncodedContent(new[] 
-            {
-                new KeyValuePair<string, string>("key", signature.ApiKey),                
-                new KeyValuePair<string, string>("signature", signature.Signature),
-                new KeyValuePair<string, string>("nonce", signature.Nonce.ToString())
-            });
-
-            var response = _http.PostAsync("api/user_transactions/", content).Result;
-
-            if (!response.IsSuccessStatusCode)
-            {
-                //Todo: which errors to expect?
-                throw new Exception("Request went wrong...");
-            }
-            //TODO: we also can receive an error in json on HTTP 200 ex: {"error":"Invalid nonce"} 
-
-            return JsonConvert.DeserializeObject<List<UserTransaction>>(response.Content.ReadAsStringAsync().Result);
+            var param = new[] {
+                new KeyValuePair<string, string>("offset", offset.ToString()),
+                new KeyValuePair<string, string>("limit", limit.ToString()),
+                new KeyValuePair<string, string>("sort", sort)
+            };
+            return PostAuthenticatedRequest<List<UserTransaction>>("api/user_transactions/", signature, param);
         }
 
         /// <summary>
@@ -146,60 +124,26 @@ namespace Leprechaun.Api.BitStamp
         /// <returns></returns>
         public List<Order> GetOpenOrders(BitStampSignature signature)
         {
-            //Assemble content
-            var content = new FormUrlEncodedContent(new[] 
-            {
-                new KeyValuePair<string, string>("key", signature.ApiKey),                
-                new KeyValuePair<string, string>("signature", signature.Signature),
-                new KeyValuePair<string, string>("nonce", signature.Nonce.ToString())
-            });
-
-            var response = _http.PostAsync("api/open_orders/", content).Result;
-
-            if (!response.IsSuccessStatusCode)
-            {
-                //Todo: which errors to expect?
-                throw new Exception("Request went wrong...");
-            }
-            //TODO: we also can receive an error in json on HTTP 200 ex: {"error":"Invalid nonce"} 
-
-            return JsonConvert.DeserializeObject<List<Order>>(response.Content.ReadAsStringAsync().Result);
+            return PostAuthenticatedRequest<List<Order>>("api/open_orders/", signature);
         }
 
         /// <summary>
         /// Cancel order
         /// </summary>
         /// <returns></returns>
-        public void CancelOrder(BitStampSignature signature, string orderID)
+        public bool CancelOrder(BitStampSignature signature, string orderID)
         {
             if (string.IsNullOrWhiteSpace(orderID))
             {
                 throw new ArgumentException("Invalid order ID");
             }
             
-            //Assemble content
-            var content = new FormUrlEncodedContent(new[] 
+            var param = new[] 
             {
-                new KeyValuePair<string, string>("key", signature.ApiKey),                
-                new KeyValuePair<string, string>("signature", signature.Signature),
-                new KeyValuePair<string, string>("nonce", signature.Nonce.ToString()),
                 new KeyValuePair<string, string>("id", orderID)
-            });
+            };
 
-            var response = _http.PostAsync("api/cancel_order/", content).Result;
-
-            if (!response.IsSuccessStatusCode)
-            {
-                //Todo: which errors to expect?
-                throw new Exception("Request went wrong...");
-            }
-            //TODO: we also can receive an error in json on HTTP 200 ex: {"error":"Invalid nonce"} 
-
-            //BitStamp:
-            //Returns 'true' if order has been found and canceled.
-
-            if (!Convert.ToBoolean(JsonConvert.DeserializeObject(response.Content.ReadAsStringAsync().Result)))
-                throw new Exception("Cancel order failed.");
+            return PostAuthenticatedRequest<bool>("api/cancel_order/", signature, param);
         }
 
         /// <summary>
@@ -213,32 +157,25 @@ namespace Leprechaun.Api.BitStamp
         {
             if (amount <= 0)
             {
-                throw new ArgumentException("Amount is invalid");
+                throw new ArgumentException("Invalid amount");
             }
 
+            if (price.HasValue && price <= 0)
+            {
+                throw new ArgumentException("Invalid price");
+            }
+
+            //Check actual bid rate when price is empty
             var rate = GetRateInfo();            
             if (!price.HasValue) price = rate.Bid;
 
-            //Assemble content
-            var content = new FormUrlEncodedContent(new[] 
+            var param = new[] 
             {
-                new KeyValuePair<string, string>("key", signature.ApiKey),                
-                new KeyValuePair<string, string>("signature", signature.Signature),
-                new KeyValuePair<string, string>("nonce", signature.Nonce.ToString()),
-                new KeyValuePair<string, string>("amount ", amount.ToString(CultureInfo.InvariantCulture)),
+                new KeyValuePair<string, string>("amount", amount.ToString(CultureInfo.InvariantCulture)),
                 new KeyValuePair<string, string>("price", price.Value.ToString(CultureInfo.InvariantCulture))
-            });
+            };
 
-            var response = _http.PostAsync("api/buy/", content).Result;
-
-            if (!response.IsSuccessStatusCode)
-            {
-                //Todo: which errors to expect?
-                throw new Exception("Request went wrong...");
-            }
-            //TODO: we also can receive an error in json on HTTP 200 ex: {"error":"Invalid nonce"} 
-
-            return JsonConvert.DeserializeObject<Order>(response.Content.ReadAsStringAsync().Result);
+            return PostAuthenticatedRequest<Order>("api/buy/", signature, param);
         }
 
         /// <summary>
@@ -255,35 +192,103 @@ namespace Leprechaun.Api.BitStamp
                 throw new ArgumentException("Amount is invalid");
             }
 
+            if (price.HasValue && price <= 0)
+            {
+                throw new ArgumentException("Invalid price");
+            }
+
+            //Check actual ask rate when price is empty
             var rate = GetRateInfo();
             if (!price.HasValue) price = rate.Ask;
 
-            //Assemble content
-            var content = new FormUrlEncodedContent(new[] 
+            var param = new[] 
             {
-                new KeyValuePair<string, string>("key", signature.ApiKey),                
-                new KeyValuePair<string, string>("signature", signature.Signature),
-                new KeyValuePair<string, string>("nonce", signature.Nonce.ToString()),
-                new KeyValuePair<string, string>("amount ", amount.ToString(CultureInfo.InvariantCulture)),
+                new KeyValuePair<string, string>("amount", amount.ToString(CultureInfo.InvariantCulture)),
                 new KeyValuePair<string, string>("price", price.Value.ToString(CultureInfo.InvariantCulture))
+            };
+
+            return PostAuthenticatedRequest<Order>("api/sell/", signature, param);
+        }
+        #endregion   
+     
+
+        #region HELPERS
+        /// <summary>
+        /// Post an authenticated request to BitStamp
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="path"></param>
+        /// <param name="signature"></param>
+        /// <param name="param"></param>
+        /// <returns></returns>
+        private T PostAuthenticatedRequest<T>(string path, BitStampSignature signature, IEnumerable<KeyValuePair<string, string>> param = null)
+        {
+            if (signature == null)
+            {
+                throw new ArgumentException("Invalid signature");
+            }
+
+            var allParam = new List<KeyValuePair<string, string>>(new[] 
+            {
+                new KeyValuePair<string, string>("key", signature.ApiKey),           
+                new KeyValuePair<string, string>("signature", signature.Signature),
+                new KeyValuePair<string, string>("nonce", signature.Nonce.ToString())
             });
 
-            var response = _http.PostAsync("api/sell/", content).Result;
+            if (param != null)
+            {
+                allParam.AddRange(param);
+            }
+
+            return PostRequest<T>(path, allParam);
+        }
+
+        /// <summary>
+        /// Post a request to BitStamp
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="path"></param>
+        /// <param name="param"></param>
+        /// <returns></returns>
+        private T PostRequest<T>(string path, IEnumerable<KeyValuePair<string, string>> param = null)
+        {
+            //Assemble content
+            var content = new FormUrlEncodedContent(param);
+
+            var response = _http.PostAsync(path, new FormUrlEncodedContent(param)).Result;
 
             if (!response.IsSuccessStatusCode)
             {
-                //Todo: which errors to expect?
-                throw new Exception("Request went wrong...");
+                throw new BitStampException(string.Format("Invalid request: POST HTTP {0}: {1}.", response.StatusCode , response.RequestMessage.RequestUri));
             }
-            //TODO: we also can receive an error in json on HTTP 200 ex: {"error":"Invalid nonce"} 
 
-            return JsonConvert.DeserializeObject<Order>(response.Content.ReadAsStringAsync().Result);
+            var responseContent = response.Content.ReadAsStringAsync().Result;
+
+            Error error = null;
+            try
+            {
+                //we also can receive an error in json on HTTP 200
+                //We need to check for error first.
+                //Of course this can crash if the object isn't bitstamps error, which is good :-)
+                error = JsonConvert.DeserializeObject<Error>(responseContent);
+            }
+            catch (Exception ex) { /*It should be normal to crash here...*/ }
+
+            if(error != null && error.Messages != null && error.Messages.Count > 0)
+            {
+                throw new BitStampException(error);
+            }
+
+            //Deserialize successful response
+            return JsonConvert.DeserializeObject<T>(responseContent);
         }
-        #endregion        
-    
+        #endregion
+
+
         #region IDisposable Members
         public void Dispose()
         {
+            //Dispose the HttpClient
             if (_http != null)
             {
                 _http.Dispose();

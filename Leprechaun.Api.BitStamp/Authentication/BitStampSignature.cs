@@ -12,9 +12,13 @@ namespace Leprechaun.Api.BitStamp
     public class BitStampSignature
     {
         private BitStampCredentials _credentials;        
-        private long _nonce;
+        private int _nonce;
         private string _signature;
 
+        /// <summary>
+        /// Create a new BitStamp signature.
+        /// </summary>
+        /// <param name="credentials"></param>
         public BitStampSignature(BitStampCredentials credentials)
         {
             _credentials = credentials;
@@ -24,7 +28,7 @@ namespace Leprechaun.Api.BitStamp
 
         public string ApiKey { get { return _credentials.ApiKey; } }
         public string ClientID { get { return _credentials.ClientID; } }
-        public long Nonce { get { return _nonce; } }
+        public int Nonce { get { return _nonce; } }
         public string Signature { get { return _signature; } }
 
 
@@ -44,7 +48,7 @@ namespace Leprechaun.Api.BitStamp
 
         #region UTILITY
         /// <summary>
-        /// Create hash
+        /// Create hash.
         /// </summary>
         /// <param name="key"></param>
         /// <param name="data"></param>
@@ -61,12 +65,13 @@ namespace Leprechaun.Api.BitStamp
         }
 
         /// <summary>
-        /// Create nonce
+        /// Create nonce.
+        /// Info: once is a regular integer number. It must be increasing with every request you make. 
         /// </summary>
         /// <returns></returns>
-        private static long GetNonce() 
-        { 
-            return (long) (DateTime.Now - new DateTime(1970, 1, 1)).TotalMilliseconds; 
+        private static int GetNonce() 
+        {
+            return (int) (DateTime.Now - new DateTime(1970, 1, 1)).TotalSeconds; 
         }
         #endregion
     }

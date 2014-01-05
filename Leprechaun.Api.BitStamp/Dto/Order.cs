@@ -4,9 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace Leprechaun.Api.BitStamp
 {
+    
+
     public class Order
     {
         /// <summary>
@@ -26,7 +29,8 @@ namespace Leprechaun.Api.BitStamp
         /// Get/set type - buy or sell (0 - buy; 1 - sell)
         /// </summary>
         [JsonProperty("type")]
-        public int Type { get; set; }
+        [JsonConverter(typeof(JsonIntEnumConverter))]
+        public OrderType Type { get; set; }
 
         /// <summary>
         /// Get/set BTC price
